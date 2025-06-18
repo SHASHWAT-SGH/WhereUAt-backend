@@ -66,6 +66,27 @@ public class EventController {
         return new ResponseEntity<>(eventRepository.findAll(), HttpStatus.OK);
     }
 
+    @GetMapping
+    public ResponseEntity<?> getEventsByOrganizerId(@RequestParam String organizerId) {
+        // Logic to get events by organizer ID
+        List<Event> events = eventRepository.getByEventOrganizerId(organizerId);
+        if (events.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(events, HttpStatus.OK);
+
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getEventsByMemberId(@RequestParam String memberId) {
+        // Logic to get events by member ID
+        List<Event> events = eventRepository.findByEventMembersIdContaining(memberId);
+        if (events.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
 
 
 }
