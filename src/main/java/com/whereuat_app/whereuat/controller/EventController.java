@@ -66,7 +66,7 @@ public class EventController {
         return new ResponseEntity<>(eventRepository.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/get-events-by-organizer")
     public ResponseEntity<?> getEventsByOrganizerId(@RequestParam String organizerId) {
         // Logic to get events by organizer ID
         List<Event> events = eventRepository.getByEventOrganizerId(organizerId);
@@ -77,7 +77,7 @@ public class EventController {
 
     }
 
-    @GetMapping
+    @GetMapping("/get-events-by-member")
     public ResponseEntity<?> getEventsByMemberId(@RequestParam String memberId) {
         // Logic to get events by member ID
         List<Event> events = eventRepository.findByEventMembersIdContaining(memberId);
