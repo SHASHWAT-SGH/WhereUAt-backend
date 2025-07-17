@@ -23,7 +23,7 @@ public class AuthController {
      public ResponseEntity<String> login(@RequestBody LoginRequestDTO request) {
          // Logic to authenticate user
          User fetchedUser = usersRepository.findByUserEmail(request.getUserEmail());
-        System.out.println("Login request received for user: " + request);
+         System.out.println("Login request received for user: " + request);
 
          // if user does not exist
          if (fetchedUser == null) {

@@ -54,7 +54,7 @@ public class GoogleAuthFilter extends OncePerRequestFilter {
             }
 
         } else {
-            System.out.println("No Bearer token found in the request.");
+//            System.out.println("No Bearer token found in the request.");
         }
 
         filterChain.doFilter(request, response);

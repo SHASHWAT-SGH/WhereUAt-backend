@@ -27,8 +27,7 @@ public class EventController {
         Event event = new Event();
         event.setEventName(request.getEventName());
         event.setEventDescription(request.getEventDescription());
-        event.setEventTime(request.getEventTime());
-        event.setEventDate(request.getEventDate());
+        event.setEventTimeStamp(request.getEventTimeStamp());
         event.setEventLatitude(request.getEventLatitude());
         event.setEventLongitude(request.getEventLongitude());
         event.setEventImageUrl(request.getEventImageUrl());
