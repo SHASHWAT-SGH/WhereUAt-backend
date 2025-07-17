@@ -4,22 +4,27 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
+@Slf4j
+@Service
 public class GoogleTokenVerifier {
 
-//    @Value("${google.client-id}")
-    private static final String CLIENT_ID = "";
+    private final GoogleIdTokenVerifier verifier;
 
-    private static  final GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
-            JacksonFactory.getDefaultInstance())
-            .setAudience(Collections.singletonList(CLIENT_ID))
-            .build();
+    public GoogleTokenVerifier(@Value("${google.client-id}") String clientId) {
+        System.out.println("Google Client ID: " + clientId);
+        this.verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(),
+                JacksonFactory.getDefaultInstance())
+                .setAudience(Collections.singletonList(clientId))
+                .build();
+    }
 
-    public static GoogleIdToken.Payload verify(String token) {
-        System.out.println("CLIENT_ID "+CLIENT_ID);
+    public GoogleIdToken.Payload verifyToken(String token) {
         System.out.println("TOKEN "+token);
         try {
             GoogleIdToken idToken = verifier.verify(token);

@@ -21,6 +21,7 @@ import java.util.Collections;
 public class GoogleAuthFilter extends OncePerRequestFilter {
 
     private final UsersRepository usersRepository;
+    private final GoogleTokenVerifier googleTokenVerifier;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -28,7 +29,7 @@ public class GoogleAuthFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             String token = authHeader.substring(7);
-            GoogleIdToken.Payload payload = GoogleTokenVerifier.verify(token);
+            GoogleIdToken.Payload payload = googleTokenVerifier.verifyToken(token);
 
             if (payload != null) {
                 String email = payload.getEmail();
