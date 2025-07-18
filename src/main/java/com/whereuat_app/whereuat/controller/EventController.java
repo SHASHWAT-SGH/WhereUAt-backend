@@ -1,16 +1,18 @@
 package com.whereuat_app.whereuat.controller;
 
 import com.whereuat_app.whereuat.dto.request.CreateEventRequestDTO;
+import com.whereuat_app.whereuat.enums.JoinStatus;
 import com.whereuat_app.whereuat.model.Event;
-import com.whereuat_app.whereuat.model.User;
 import com.whereuat_app.whereuat.repository.EventRepository;
 import com.whereuat_app.whereuat.repository.UsersRepository;
 import com.whereuat_app.whereuat.service.EventService;
+import com.whereuat_app.whereuat.types.EventMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,8 +28,23 @@ public class EventController {
     public ResponseEntity<Event> createEvent(@RequestBody CreateEventRequestDTO request) {
         // Logic to create an event
         System.out.println("Creating event: " + request);
+        List<EventMember> members = new ArrayList<>();
 
-        List<User> eventMembers = userRepository.findAllById(request.getEventMembersId());
+        // Add organizer as JOINED
+        EventMember organizer = new EventMember();
+        organizer.setUserId(request.getEventOrganizerId());
+        organizer.setStatus(JoinStatus.JOINED);
+        members.add(organizer);
+
+        for (String memberId : request.getEventMembersId()) {
+            if (!memberId.equals(request.getEventOrganizerId())) {
+                EventMember member = new EventMember();
+                member.setUserId(memberId);
+                member.setStatus(JoinStatus.PENDING);
+                members.add(member);
+            }
+        }
+
         // save the event
         Event event = new Event();
         event.setEventName(request.getEventName());
@@ -37,8 +54,8 @@ public class EventController {
         event.setEventLongitude(request.getEventLongitude());
         event.setEventImageUrl(request.getEventImageUrl());
         event.setEventOrganizerId(request.getEventOrganizerId());
-        event.setEventMembersId(eventMembers);
-        // Assuming you have an EventRepository to save the event
+        event.setEventMembers(members);
+
         event = eventRepository.save(event);
 
         return new ResponseEntity<>(event, HttpStatus.CREATED);
@@ -85,7 +102,7 @@ public class EventController {
     public ResponseEntity<?> getEventsByMemberId(@RequestParam String memberId) {
         // Logic to get events by member ID
         System.out.println("REQUEST MEMBER ID: " + memberId);
-        List<Event> events = eventRepository.findByEventMembersIdContaining(memberId);
+        List<Event> events = eventRepository.findByEventMembersUserId(memberId);
         if (events.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
