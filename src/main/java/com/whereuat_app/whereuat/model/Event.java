@@ -19,5 +19,5 @@ public class Event {
     private Instant eventTimeStamp;
     private String eventImageUrl;
     private String eventOrganizerId;
-    private List<String> eventMembersId;
+    private List<User> eventMembersId;
 }

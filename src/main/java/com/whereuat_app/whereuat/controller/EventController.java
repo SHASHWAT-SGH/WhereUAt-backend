@@ -2,7 +2,9 @@ package com.whereuat_app.whereuat.controller;
 
 import com.whereuat_app.whereuat.dto.request.CreateEventRequestDTO;
 import com.whereuat_app.whereuat.model.Event;
+import com.whereuat_app.whereuat.model.User;
 import com.whereuat_app.whereuat.repository.EventRepository;
+import com.whereuat_app.whereuat.repository.UsersRepository;
 import com.whereuat_app.whereuat.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,11 +20,14 @@ public class EventController {
 
     private final EventRepository eventRepository;
     private final EventService eventService;
+    private final UsersRepository userRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createEvent(@RequestBody CreateEventRequestDTO request) {
+    public ResponseEntity<Event> createEvent(@RequestBody CreateEventRequestDTO request) {
         // Logic to create an event
         System.out.println("Creating event: " + request);
+
+        List<User> eventMembers = userRepository.findAllById(request.getEventMembersId());
         // save the event
         Event event = new Event();
         event.setEventName(request.getEventName());
@@ -32,11 +37,11 @@ public class EventController {
         event.setEventLongitude(request.getEventLongitude());
         event.setEventImageUrl(request.getEventImageUrl());
         event.setEventOrganizerId(request.getEventOrganizerId());
-        event.setEventMembersId(request.getEventMembersId());
+        event.setEventMembersId(eventMembers);
         // Assuming you have an EventRepository to save the event
-        eventRepository.save(event);
+        event = eventRepository.save(event);
 
-        return new ResponseEntity<>("Event created", HttpStatus.CREATED);
+        return new ResponseEntity<>(event, HttpStatus.CREATED);
     }
 
     @PostMapping("/update")
@@ -79,6 +84,7 @@ public class EventController {
     @GetMapping("/get-events-by-member")
     public ResponseEntity<?> getEventsByMemberId(@RequestParam String memberId) {
         // Logic to get events by member ID
+        System.out.println("REQUEST MEMBER ID: " + memberId);
         List<Event> events = eventRepository.findByEventMembersIdContaining(memberId);
         if (events.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

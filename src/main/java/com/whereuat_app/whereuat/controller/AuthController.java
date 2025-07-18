@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
@@ -25,18 +27,17 @@ public class AuthController {
          User fetchedUser = usersRepository.findByUserEmail(request.getUserEmail());
          System.out.println("Login request received for user: " + request);
 
-         // if user does not exist
-         if (fetchedUser == null) {
-             // add to the database
-             User newUser = new User();
-             newUser.setFirstName(request.getFirstName());
-             newUser.setLastName(request.getLastName());
-             newUser.setUserEmail(request.getUserEmail());
-             usersRepository.insert(newUser);
-             return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
-         }
-         // if user exists
-        return new ResponseEntity<>("User exists", HttpStatus.OK);
+         User user;
+        // if user does not exist
+        // add to the database
+        user = Objects.requireNonNullElseGet(fetchedUser, User::new);
+        user.setId(request.getId());
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setUserEmail(request.getUserEmail());
+        user.setProfileImageUrl(request.getProfileImageUrl());
+        usersRepository.save(user);
+        return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
      }
 
 }

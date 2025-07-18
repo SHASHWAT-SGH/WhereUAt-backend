@@ -2,12 +2,15 @@ package com.whereuat_app.whereuat.service;
 
 import com.whereuat_app.whereuat.dto.request.CreateEventRequestDTO;
 import com.whereuat_app.whereuat.model.Event;
+import com.whereuat_app.whereuat.model.User;
 import com.whereuat_app.whereuat.repository.EventRepository;
+import com.whereuat_app.whereuat.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,6 +18,7 @@ import java.util.Optional;
 public class EventService {
 
     private final EventRepository eventRepository;
+    private final UsersRepository userRepository;
 
     public ResponseEntity<String> updateEvent(String eventId, CreateEventRequestDTO request) {
         // Logic to update an event
@@ -25,6 +29,8 @@ public class EventService {
 
         Event event = eventOptional.get();
 
+        List<User> eventMembers = userRepository.findAllById(request.getEventMembersId());
+
         event.setEventName(request.getEventName());
         event.setEventDescription(request.getEventDescription());
         event.setEventTimeStamp(request.getEventTimeStamp());
@@ -32,7 +38,7 @@ public class EventService {
         event.setEventLongitude(request.getEventLongitude());
         event.setEventImageUrl(request.getEventImageUrl());
         event.setEventOrganizerId(request.getEventOrganizerId());
-        event.setEventMembersId(request.getEventMembersId());
+        event.setEventMembersId(eventMembers);
 
         eventRepository.save(event);
 
