@@ -10,6 +10,7 @@ import com.whereuat_app.whereuat.types.EventMember;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -95,7 +96,6 @@ public class EventController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(events, HttpStatus.OK);
-
     }
 
     @GetMapping("/get-events-by-member")
@@ -109,6 +109,38 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
+    @PostMapping("/join-event")
+    public ResponseEntity<?> joinEvent(Authentication authentication, @RequestParam String eventId){
+        // Logic to join an event
 
+        Event event = eventRepository.findById(eventId).orElse(null);
+        if (event == null) {
+            return new ResponseEntity<>("Event not found", HttpStatus.NOT_FOUND);
+        }
+
+        // Check if user is already a member
+        String userId = authentication.getName();
+        System.out.println("User ID trying to join event: " + userId);
+        for (EventMember member : event.getEventMembers()) {
+            if (member.getUserId().equals(userId)) {
+                if (member.getStatus() == JoinStatus.JOINED) {
+                    return new ResponseEntity<>("Already joined the event", HttpStatus.CONFLICT);
+                } else {
+                    member.setStatus(JoinStatus.JOINED);
+                    eventRepository.save(event);
+                    return new ResponseEntity<>("Successfully joined the event", HttpStatus.OK);
+                }
+            }
+        }
+
+        // If not a member, add as JOINED
+        EventMember newMember = new EventMember();
+        newMember.setUserId(userId);
+        newMember.setStatus(JoinStatus.JOINED);
+        event.getEventMembers().add(newMember);
+        eventRepository.save(event);
+
+        return new ResponseEntity<>("Successfully joined the event", HttpStatus.OK);
+    }
 
 }
