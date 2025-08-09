@@ -1,5 +1,6 @@
 package com.whereuat_app.whereuat.model;
 
+import com.whereuat_app.whereuat.types.EventMember;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,5 +20,5 @@ public class Event {
     private Instant eventTimeStamp;
     private String eventImageUrl;
     private String eventOrganizerId;
-    private List<String> eventMembersId;
+    private List<EventMember> eventMembers;
 }
