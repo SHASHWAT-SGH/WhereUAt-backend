@@ -1,18 +1,14 @@
-package com.whereuat_app.whereuat.types;
+package com.whereuat_app.whereuat.model;
 
 import com.whereuat_app.whereuat.enums.JoinStatus;
-import com.whereuat_app.whereuat.model.User;
-import lombok.Builder;
 import lombok.Data;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
 
-@Data
 @Document
+@Data
 public class EventMember {
     @Id
     private String id;
@@ -20,8 +16,4 @@ public class EventMember {
     private String userId;
     private JoinStatus status;
     private Instant joinedAt;
-    @CreatedDate
-    private Instant createdAt;
-    @LastModifiedDate
-    private Instant updatedAt;
 }

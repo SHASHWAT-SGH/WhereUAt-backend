@@ -16,5 +16,4 @@ public class CreateEventRequestDTO {
     private String eventImageUrl;
     private String eventOrganizerId;
     private List<String> eventMembersId;
-
 }

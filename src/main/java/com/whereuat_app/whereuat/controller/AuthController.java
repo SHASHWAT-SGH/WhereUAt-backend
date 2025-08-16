@@ -19,10 +19,15 @@ import java.util.Objects;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
+    // TODO: allow only those users to login whi have oAuth2 credentials. mach the received user id with google id
+
+
     private final UsersRepository usersRepository;
 
     @PostMapping("/login")
      public ResponseEntity<String> login(@RequestBody LoginRequestDTO request) {
+
+        System.out.println("Login request received: " + request);
          // Logic to authenticate user
          User fetchedUser = usersRepository.findByUserEmail(request.getUserEmail());
          System.out.println("Login request received for user: " + request);
