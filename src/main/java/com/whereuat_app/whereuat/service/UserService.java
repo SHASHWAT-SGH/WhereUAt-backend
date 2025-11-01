@@ -15,7 +15,14 @@ public class UserService {
     private final UsersRepository userRepository;
 
     public List<UserResponseDTO> searchUser(String searchText) {
-        return userRepository.findByUserEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCase(searchText, searchText);
+        List<User> list =  userRepository.findByUserEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCase(searchText, searchText);
+
+        if (list.isEmpty()) {
+            return List.of();
+        }
+        return list.stream()
+                .map(UserResponseDTO::new)
+                .toList();
     }
 
     public UserResponseDTO getUserByEmail(String email) {

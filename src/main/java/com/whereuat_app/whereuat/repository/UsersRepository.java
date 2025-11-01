@@ -12,7 +12,7 @@ public interface UsersRepository extends MongoRepository<User, String> {
 
     User findByUserEmail(String userEmail);
 
-    List<UserResponseDTO> findByUserEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCase(String userEmail, String firstName);
+    List<User> findByUserEmailContainingIgnoreCaseOrFirstNameContainingIgnoreCase(String userEmail, String firstName);
 
 
 }

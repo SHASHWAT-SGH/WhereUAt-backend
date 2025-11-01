@@ -22,7 +22,7 @@ public class LocationUpdateRequest {
     private Double longitude;
 
     // optional extras from mobile SDKs
-    private Double accuracy; // meters
-    private Double heading;  // degrees
-    private Double speed;    // m/s
+//    private Double accuracy; // meters
+//    private Double heading;  // degrees
+//    private Double speed;    // m/s
 }
